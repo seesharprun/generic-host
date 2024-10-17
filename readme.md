@@ -1,4 +1,4 @@
-# Sample Generic Host Application
+# Sample Generic Host Application with two services
 
 1. `cd` to the */host* folder.
 
@@ -6,5 +6,5 @@
 
 1. Set different .NET user secret values using:
 
-  - `dotnet user-secrets set "Messages:Greeting" "Hello, person!"`
-  - `dotnet user-secrets set "ServiceConfiguration:PingFrequency" "5"`
+  - `dotnet user-secrets set "Configuration:FirstPingFrequency" "15"`
+  - `dotnet user-secrets set "Configuration:SecondPingFrequency" "20"`

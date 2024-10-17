@@ -1,17 +1,13 @@
-using Cosmos.Samples.Service.Host.Settings;
-using Microsoft.Extensions.Options;
-
 namespace Cosmos.Samples.Service.Host.Services;
 
-internal class PingService(ILogger<PingService> logger, IMessageService messageService, IOptions<ServiceConfiguration> serviceConfigurationOptions) : BackgroundService
+internal abstract class PingService(ILogger<PingService> logger, ITimerService timerService, IMessageService messageService, string caller, int pingFrequency) : BackgroundService
 {
     private Timer? _timer;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
-    private readonly ServiceConfiguration _serviceConfiguration = serviceConfigurationOptions.Value;
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _timer = new Timer(DoWorkAsync, new { }, TimeSpan.Zero, TimeSpan.FromSeconds(_serviceConfiguration.PingFrequency));
+        _timer = timerService.GetTimer(DoWorkAsync, pingFrequency);
 
         stoppingToken.Register(() =>
         {
@@ -26,7 +22,6 @@ internal class PingService(ILogger<PingService> logger, IMessageService messageS
     {
         await Task.Delay(TimeSpan.FromSeconds(2.5));
 
-        var message = messageService.GetMessage();
-        logger.LogInformation(message);
+        logger.LogInformation(messageService.GetMessage(caller));
     }
 }
