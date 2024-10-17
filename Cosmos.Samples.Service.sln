@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cosmos.Samples.Service.Host", "host\Cosmos.Samples.Service.Host.csproj", "{81C71CE6-17F1-4099-9E11-F2564E37FB45}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cosmos.Samples.Service.Web", "web\Cosmos.Samples.Service.Web.csproj", "{2CF6632A-C3BF-4386-9005-122A6629652B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,9 +14,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{81C71CE6-17F1-4099-9E11-F2564E37FB45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{81C71CE6-17F1-4099-9E11-F2564E37FB45}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{81C71CE6-17F1-4099-9E11-F2564E37FB45}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{81C71CE6-17F1-4099-9E11-F2564E37FB45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CF6632A-C3BF-4386-9005-122A6629652B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CF6632A-C3BF-4386-9005-122A6629652B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CF6632A-C3BF-4386-9005-122A6629652B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CF6632A-C3BF-4386-9005-122A6629652B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
