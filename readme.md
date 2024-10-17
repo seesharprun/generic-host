@@ -1,6 +1,8 @@
 # Sample Generic Host Application
 
-1. Run it with `dotnet build` in the */host* folder.
+1. `cd` to the */host* folder.
+
+1. Run it with `dotnet run`.
 
 1. Set different .NET user secret values using:
 
