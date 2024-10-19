@@ -17,6 +17,8 @@ builder.Services.Configure<Resources>(builder.Configuration.GetSection(nameof(Re
 builder.Services.AddTransient<IObserverService, AzureCosmosDBNoSQLChangeFeedService>();
 builder.Services.AddTransient<IDataRepositoryService, AzureCosmosDBNoSQLContainerDataService>();
 
+builder.Services.AddSingleton<INotificationService, ToastNotificationService>();
+
 builder.Services.AddSingleton(async (IServiceProvider provider) =>
 {
     Credentials credentials = provider.GetRequiredService<IOptions<Credentials>>().Value;
@@ -45,6 +47,8 @@ var app = builder.Build();
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+app.UseHttpsRedirection();
 
 app.UseAntiforgery();
 

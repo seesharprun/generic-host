@@ -1,0 +1,47 @@
+@inject INotificationService notificationService
+@implements System.IDisposable
+
+@if (Show)
+{
+    <div role="alert" class="fixed top-2 right-2 min-w-72 z-100 bg-white border border-gray-300 rounded-lg shadow-lg shadow-2xl">
+        <div class="flex items-center justify-between p-2 bg-blue-500 text-white rounded-t-lg">
+            <div class="font-bold">Background notification</div>
+        </div>
+        <div class="border-t border-gray-300"></div>
+        <div class="p-4 text-black">
+            <span>@Message</span>
+        </div>
+    </div>
+}
+
+@code {
+    private bool Show { get; set; } = false;
+    private string Message { get; set; } = String.Empty;
+
+    protected override void OnInitialized()
+    {
+        notificationService.ReceiveEvent += async (m) => await ShowToastAsync(m);
+    }
+
+    private async Task ShowToastAsync(string message)
+    {
+        Message = message;
+        Show = true;
+        await InvokeAsync(StateHasChanged);
+        await Task.Delay(TimeSpan.FromSeconds(5));
+        await HideToastAsync();
+    }
+
+    private async Task HideToastAsync()
+    {
+        Show = false;
+        await InvokeAsync(StateHasChanged);
+        Message = String.Empty;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        notificationService.ReceiveEvent -= async (m) => await ShowToastAsync(m);
+    }
+}

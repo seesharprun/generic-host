@@ -7,7 +7,7 @@ internal class ProcessorService(ILogger<ProcessorService> logger, IObserverServi
     public async Task StartAsync(CancellationToken _)
     {
         logger.LogInformation("Processor service is starting...");
-        await observerService.StartAsync<Order>();
+        await observerService.StartAsync<Order>((order) => order.customerName);
     }
 
     public async Task StopAsync(CancellationToken _)

@@ -1,8 +1,10 @@
 ﻿@page "/"
 @inject IDataRepositoryService dataRepositoryService
+@inject INotificationService notificationService
 
 <PageTitle>Home</PageTitle>
 
+<Toast />
 <main>
     <div class="p-5 mx-auto bg-white flex justify-center items-center gap-x-2">
         <button type="button" class="rounded-lg bg-slate-950 text-white p-2 shadow-lg shadow-slate-950" @onclick="async () => await AddRandomAsync()">Add random order</button>
@@ -15,7 +17,7 @@
             <div class="font-bold">Fulfilled</div>
             <div class="font-bold">Total</div>
             <div class="font-bold"></div>
-            @foreach (var item in @items)
+            @foreach (var item in @Items)
             {
                 <div class="font-mono text-sm">@item.id</div>
                 <div>@item.customerName</div>
@@ -31,15 +33,16 @@
 </main>
 
 @code {
-    private Random random = new();
+    private Random Random { get; } = new();
 
-    private List<Order> items = new();
+    private List<Order> Items { get; set; } = new();
+
+    private bool EnableNotificationButton { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
     {
         await GetAllOrdersAsync();
     }
-
     protected async Task AddRandomAsync()
     {
         Order item = new(
@@ -47,7 +50,7 @@
             customerName: new Faker().Person.FullName,
             submitted: DateTime.Now,
             fulfilled: false,
-            total: (decimal)(random.NextDouble() * 1000)
+            total: (decimal)(Random.NextDouble() * 1000)
         );
 
         await dataRepositoryService.AddOrReplaceAsync<Order>(item);
@@ -64,7 +67,8 @@
     private async Task GetAllOrdersAsync()
     {        
         IEnumerable<Order> orders = await dataRepositoryService.GetAllAsync<Order>();
-        items.Clear();
-        items.AddRange(orders);
+        Items.Clear();
+        Items.AddRange(orders);
+        await InvokeAsync(StateHasChanged);
     }
 }

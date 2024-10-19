@@ -7,21 +7,22 @@ namespace Cosmos.Samples.Service.Web.Services;
 
 internal interface IObserverService
 {
-    Task StartAsync<T>() where T : Item;
+    Task StartAsync<T>(Func<T, string>? getItemDisplayName = null) where T : Item;
     Task StopAsync();
 }
 
-internal sealed class AzureCosmosDBNoSQLChangeFeedService(ILogger<AzureCosmosDBNoSQLChangeFeedService> logger, IOptions<Resources> resourcesSettings, CosmosClient client) : IObserverService
+internal sealed class AzureCosmosDBNoSQLChangeFeedService(ILogger<AzureCosmosDBNoSQLChangeFeedService> logger, IOptions<Resources> resourcesSettings, INotificationService notificationService, CosmosClient client) : IObserverService
 {
     private readonly Container _dataContainer = client.GetContainer(resourcesSettings.Value.DatabaseName, resourcesSettings.Value.DataContainerName);
+    
     private readonly Container _leaseContainer = client.GetContainer(resourcesSettings.Value.DatabaseName, resourcesSettings.Value.LeaseContainerName);
 
     private ChangeFeedProcessor? _changeFeedProcessor;
 
-    public async Task StartAsync<T>() where T : Item
+    public async Task StartAsync<T>(Func<T, string>? getItemDisplayName = null) where T : Item
     {
         _changeFeedProcessor = _dataContainer
-            .GetChangeFeedProcessorBuilder<T>("processorName", HandleChangesAsync)
+            .GetChangeFeedProcessorBuilder<T>("processorName", async (changes, _) => await HandleChangesAsync(changes, getItemDisplayName))
             .WithInstanceName($"instance-{Guid.NewGuid()}")
             .WithLeaseContainer(_leaseContainer)
             .Build();
@@ -29,11 +30,13 @@ internal sealed class AzureCosmosDBNoSQLChangeFeedService(ILogger<AzureCosmosDBN
         await _changeFeedProcessor.StartAsync();
     }
 
-    private async Task HandleChangesAsync<T>(IReadOnlyCollection<T> changes, CancellationToken _) where T : Item
+    private async Task HandleChangesAsync<T>(IReadOnlyCollection<T> changes, Func<T, string>? getItemDisplayName) where T : Item
     {
         foreach (var item in changes)
         {
             logger.LogInformation($"Detected operation for item\t[{item.id}]");
+
+            notificationService.Send($"Change feed picked up item: {(getItemDisplayName is not null ? getItemDisplayName(item) : item.id)}");
         }
         await Task.CompletedTask;
     }
